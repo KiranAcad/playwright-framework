@@ -1,33 +1,24 @@
+// playwright.config.ts
 import { defineConfig, devices } from '@playwright/test';
-import { getConfig } from './config/configLoader';
-
-const { baseUrl } = getConfig();
+import { config } from './config/config';
+import path from 'path';
 
 export default defineConfig({
   testDir: './tests',
-
-  fullyParallel: true,
-
-  forbidOnly: !!process.env.CI,
-
-  retries: process.env.CI ? 2 : 0,
-
-  workers: process.env.CI ? 1 : undefined,
-
-  reporter: 'html',
+  globalSetup: require.resolve('./global-setup'),
+  timeout: 60000,
+  expect: { timeout: 5000 },
+  reporter: [['html'], ['list']],
 
   use: {
-    
-    baseURL: baseUrl,
-
-    headless: true,
+    baseURL: config.baseUrl,
+    storageState: path.resolve(__dirname, 'storage/auth.json'), // ✅ full path
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
 
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    }
+    { name: 'Desktop', use: { ...devices['Desktop Chrome'] } },
   ],
 });
