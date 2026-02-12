@@ -13,8 +13,6 @@ export class TestDataManager {
     for (const item of this.createdItems) {
       console.log(`🧹 Cleaning item: ${item}`);
 
-      // Example future:
-      // await api.deleteUser(item);
     }
 
     this.createdItems = [];

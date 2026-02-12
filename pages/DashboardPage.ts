@@ -4,7 +4,7 @@ import { BasePage } from './BasePage';
 
 export class DashboardPage extends BasePage {
 
-  // 🔹 Static locators
+  
   private readonly dashboardHeading: Locator;
   private readonly dashboardWidgets: Locator;
 
@@ -16,7 +16,7 @@ export class DashboardPage extends BasePage {
   }
 
 
-  //dynamic locator method to get any component by its name
+
   getDashboardComponent(name: string): Locator {
     return this.page.getByText(name);
   }
