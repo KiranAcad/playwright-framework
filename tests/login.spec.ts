@@ -1,25 +1,22 @@
 import { test, expect } from '../fixtures/baseTest';
-import { DashboardPage } from '../pages/DashboardPage';
 
 
-//sample test cases to check framework flow
+
 test.describe('Dashboard Suite', () => {
 
-  test('TC01 - Validate Dashboard After Login', async ({ authenticatedPage }) => {
-    const dashboard = new DashboardPage(authenticatedPage);
-    await dashboard.validateDashboardLoaded();
+  test('TC01 - Validate Dashboard After Login', async ({ dashboardPage }) => {
+    await dashboardPage.validateDashboardLoaded();
   });
 
-  test('TC02 - Validate Dashboard Components', async ({ authenticatedPage }) => {
-    const dashboard = new DashboardPage(authenticatedPage);
-    await dashboard.validateDashboardLoaded();
-    await dashboard.validateAllCoreComponents();
-  });
+  test('TC02 - Validate Dashboard Components', async ({ dashboardPage }) => {
+  await dashboardPage.validateDashboardLoaded();
+  await dashboardPage.validateAllCoreComponents();
+});
 
 });
 
 
-//data cleanup sample test cases
+
 test.describe('TestDataManager Verification Suite', () => {
 
   test('TC01 - Should store and retrieve created test items', async ({ testDataManager }) => {

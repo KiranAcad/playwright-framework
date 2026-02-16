@@ -4,17 +4,19 @@ import { config } from '../config/config';
 import { TestDataManager } from '../utils/testDataManager';
 import path from 'path';
 import fs from 'fs';
+import { DashboardPage } from '@pages/DashboardPage';
 
 type TestFixtures = {
   authenticatedPage: Page;
   testDataManager: TestDataManager;
+  dashboardPage: DashboardPage;
 };
 
 export const test = base.extend<TestFixtures>({
 
+  // 🔹 Test Data Manager Fixture
   testDataManager: async ({}, use) => {
     const manager = new TestDataManager();
-
     console.log('🔧 TestDataManager initialized');
 
     try {
@@ -25,6 +27,7 @@ export const test = base.extend<TestFixtures>({
     }
   },
 
+  // 🔹 Authenticated Page Fixture
   authenticatedPage: async ({ browser }, use, testInfo: TestInfo) => {
 
     const storagePath = path.resolve(__dirname, '..', 'storage', 'auth.json');
@@ -36,36 +39,46 @@ export const test = base.extend<TestFixtures>({
 
     const page = await context.newPage();
 
-    // Optional: Start tracing (great for debugging)
     await context.tracing.start({
       screenshots: true,
       snapshots: true,
     });
 
-    // Navigate to dashboard (already authenticated)
     await page.goto('/web/index.php/dashboard/index');
 
     try {
       await use(page);
     } finally {
 
-      // Screenshot on failure
       if (testInfo.status !== testInfo.expectedStatus) {
+
+        // 📸 Screenshot on failure
         await testInfo.attach('failure-screenshot', {
           body: await page.screenshot({ fullPage: true }),
           contentType: 'image/png',
         });
 
-        // Save trace on failure
+        // 📦 Save trace only on failure
         await context.tracing.stop({
-          path: `test-results/trace-${testInfo.title}.zip`,
+          path: `test-results/trace-${testInfo.title.replace(/\s+/g, '_')}.zip`,
         });
+
       } else {
         await context.tracing.stop();
       }
 
       await context.close();
     }
+  },
+
+  // 🔹 Dashboard Page Fixture (NEW)
+  dashboardPage: async ({ authenticatedPage }, use) => {
+
+    const dashboard = new DashboardPage(authenticatedPage);
+
+    console.log('📊 DashboardPage fixture initialized');
+
+    await use(dashboard);
   }
 
 });
