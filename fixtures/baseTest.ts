@@ -5,11 +5,14 @@ import { TestDataManager } from '../utils/testDataManager';
 import path from 'path';
 import fs from 'fs';
 import { DashboardPage } from '@pages/DashboardPage';
+import { GoogleLandingPage } from '@pages/GoogleLandingPage';
+
 
 type TestFixtures = {
   authenticatedPage: Page;
   testDataManager: TestDataManager;
   dashboardPage: DashboardPage;
+  googleLandingPage:GoogleLandingPage;
 };
 
 export const test = base.extend<TestFixtures>({
@@ -71,14 +74,13 @@ export const test = base.extend<TestFixtures>({
     }
   },
 
-  // 🔹 Dashboard Page Fixture (NEW)
-  dashboardPage: async ({ authenticatedPage }, use) => {
+ 
 
-    const dashboard = new DashboardPage(authenticatedPage);
-
-    console.log('📊 DashboardPage fixture initialized');
-
-    await use(dashboard);
+  // 🔹 Google Landing Page Fixture (NEW)
+  googleLandingPage: async ({ page }, use) => {
+    const googlePage = new GoogleLandingPage(page);
+    console.log('🔍 GoogleLandingPage fixture initialized');
+    await use(googlePage);
   }
 
 });
