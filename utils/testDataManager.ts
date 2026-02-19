@@ -1,8 +1,11 @@
+import { logger } from './logger';
+
 export class TestDataManager {
   private createdItems: string[] = [];
 
   add(item: string) {
     this.createdItems.push(item);
+    logger.debug(`📦 Test data added: ${item}`);
   }
 
   getAll() {
@@ -11,10 +14,10 @@ export class TestDataManager {
 
   async cleanup() {
     for (const item of this.createdItems) {
-      console.log(`🧹 Cleaning item: ${item}`);
-
+      logger.debug(`🧹 Cleaning item: ${item}`);
     }
 
     this.createdItems = [];
+    logger.debug('🧹 All test data cleaned up');
   }
 }

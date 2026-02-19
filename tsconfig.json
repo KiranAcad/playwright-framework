@@ -8,14 +8,23 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "types": ["node", "playwright"],
     "baseUrl": ".",
     "paths": {
-      "@pages/*": ["pages/*"],
-      "@utils/*": ["utils/*"],
-      "@config/*": ["config/*"],
-      "@data/*": ["data/*"],
-      "@fixtures/*": ["fixtures/*"]
+      "@pages/*": [
+        "pages/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ],
+      "@config/*": [
+        "config/*"
+      ],
+      "@data/*": [
+        "data/*"
+      ],
+      "@fixtures/*": [
+        "fixtures/*"
+      ]
     }
   },
   "include": [

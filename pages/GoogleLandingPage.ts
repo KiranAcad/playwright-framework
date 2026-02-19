@@ -1,5 +1,6 @@
 import { Locator, expect, type Page } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { logger } from '../utils/logger';
 
 export class GoogleLandingPage extends BasePage {
 
@@ -13,6 +14,7 @@ export class GoogleLandingPage extends BasePage {
   }
 
   async navigate(): Promise<void> {
+    logger.info('🌐 Navigating to Google');
     await this.page.goto('https://www.google.com');
   }
 
@@ -24,6 +26,6 @@ export class GoogleLandingPage extends BasePage {
     await expect(this.searchResults).toBeVisible();
     await expect(this.page).toHaveTitle(new RegExp(searchText, 'i'));
 
-    console.log(`✅ Search functionality validated for: ${searchText}`);
+    logger.info(`✅ Search functionality validated for: ${searchText}`);
   }
 }
