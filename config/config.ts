@@ -11,4 +11,5 @@ export const config = {
   baseUrl: requireEnv('BASE_URL'),
   username: requireEnv('APP_USERNAME'),
   password: requireEnv('APP_PASSWORD'),
+  logLevel: process.env.LOG_LEVEL ?? 'info',
 };

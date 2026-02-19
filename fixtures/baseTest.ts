@@ -2,6 +2,7 @@ import { test as base, expect } from '@playwright/test';
 import type { Page, TestInfo } from '@playwright/test';
 import { config } from '../config/config';
 import { TestDataManager } from '../utils/testDataManager';
+import { logger } from '../utils/logger';
 import path from 'path';
 import fs from 'fs';
 import { DashboardPage } from '@pages/DashboardPage';
@@ -12,20 +13,20 @@ type TestFixtures = {
   authenticatedPage: Page;
   testDataManager: TestDataManager;
   dashboardPage: DashboardPage;
-  googleLandingPage:GoogleLandingPage;
+  googleLandingPage: GoogleLandingPage;
 };
 
 export const test = base.extend<TestFixtures>({
 
   // 🔹 Test Data Manager Fixture
-  testDataManager: async ({}, use) => {
+  testDataManager: async ({ }, use) => {
     const manager = new TestDataManager();
-    console.log('🔧 TestDataManager initialized');
+    logger.info('🔧 TestDataManager initialized');
 
     try {
       await use(manager);
     } finally {
-      console.log('🧹 Running test data cleanup...');
+      logger.info('🧹 Running test data cleanup...');
       await manager.cleanup();
     }
   },
@@ -34,6 +35,7 @@ export const test = base.extend<TestFixtures>({
   authenticatedPage: async ({ browser }, use, testInfo: TestInfo) => {
 
     const storagePath = path.resolve(__dirname, '..', 'storage', 'auth.json');
+    logger.debug(`📂 Storage state path: ${storagePath}`);
 
     const context = await browser.newContext({
       baseURL: config.baseUrl,
@@ -47,6 +49,7 @@ export const test = base.extend<TestFixtures>({
       snapshots: true,
     });
 
+    logger.info(`🌐 Navigating to dashboard for test: ${testInfo.title}`);
     await page.goto('/web/index.php/dashboard/index');
 
     try {
@@ -54,6 +57,7 @@ export const test = base.extend<TestFixtures>({
     } finally {
 
       if (testInfo.status !== testInfo.expectedStatus) {
+        logger.error(`❌ Test failed: ${testInfo.title} — capturing screenshot & trace`);
 
         // 📸 Screenshot on failure
         await testInfo.attach('failure-screenshot', {
@@ -67,6 +71,7 @@ export const test = base.extend<TestFixtures>({
         });
 
       } else {
+        logger.debug(`✅ Test passed: ${testInfo.title} — discarding trace`);
         await context.tracing.stop();
       }
 
@@ -74,12 +79,17 @@ export const test = base.extend<TestFixtures>({
     }
   },
 
- 
+  // 🔹 Dashboard Page Fixture
+  dashboardPage: async ({ authenticatedPage }, use) => {
+    const dashboard = new DashboardPage(authenticatedPage);
+    logger.debug('📊 DashboardPage fixture initialized');
+    await use(dashboard);
+  },
 
-  // 🔹 Google Landing Page Fixture (NEW)
+  // 🔹 Google Landing Page Fixture
   googleLandingPage: async ({ page }, use) => {
     const googlePage = new GoogleLandingPage(page);
-    console.log('🔍 GoogleLandingPage fixture initialized');
+    logger.debug('🔍 GoogleLandingPage fixture initialized');
     await use(googlePage);
   }
 
